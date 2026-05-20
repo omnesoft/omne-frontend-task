@@ -19,5 +19,11 @@
 | SPEC-003.3 | Team overview screen | done | `TeamOverviewScreen`, `MetricCard` |
 | SPEC-003.4 | My updates screen | done | Static `EmptyState` |
 | SPEC-003.5 | Settings screen | done | Presentational `SettingsRow` |
+| SPEC-004 | API integration (Part 2) | done | Rubric: D1✓ D2✓ D3✓ D4✓ |
+| SPEC-004.1 | API client and query keys | done | `api-client`, `query-keys`, `types/api` |
+| SPEC-004.2 | Teams query and async UI | done | `use-teams`, `QueryState` |
+| SPEC-004.3 | Feed URL + paginated query | done | `use-statuses`, route search |
+| SPEC-004.4 | Create/edit mutations + cache | done | `/create/$statusId`, POST/PUT |
+| SPEC-004.5 | Team overview query | done | `use-team-summary` |
 
 Legend: `planned` | `in_progress` | `done` | `blocked`
