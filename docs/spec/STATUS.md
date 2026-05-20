@@ -25,5 +25,10 @@
 | SPEC-004.3 | Feed URL + paginated query | done | `use-statuses`, route search |
 | SPEC-004.4 | Create/edit mutations + cache | done | `/create/$statusId`, POST/PUT |
 | SPEC-004.5 | Team overview query | done | `use-team-summary` |
+| SPEC-005 | Polish & decisions (Part 3) | done | See [SPEC-005-polish-and-decisions.md](./SPEC-005-polish-and-decisions.md) |
+| SPEC-005.1 | Form client validation | done | `status-form-validation`, `CreateUpdateScreen` |
+| SPEC-005.2 | Team overview empty state | done | `TeamOverviewScreen` + `EmptyState` |
+| SPEC-005.3 | Responsive shell and feed | done | `AppLayout`, `StatusFeedScreen`, `FeedToolbar` |
+| SPEC-005.4 | DECISIONS.md | done | Repo root |
 
 Legend: `planned` | `in_progress` | `done` | `blocked`
