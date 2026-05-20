@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { formatRelativeTime } from '../../lib/format-relative-time'
 import type { StatusUpdate } from '../../types/status-update'
 import { StatusChip } from '../status/StatusChip'
@@ -23,6 +24,13 @@ export function StatusUpdateCard({ update }: StatusUpdateCardProps) {
             <span className="text-sm text-foreground-subtle">
               {formatRelativeTime(update.createdAt)}
             </span>
+            <Link
+              to="/create/$statusId"
+              params={{ statusId: update.id }}
+              className="ml-auto text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+            >
+              Edit
+            </Link>
           </div>
           <div className="mb-3">
             <StatusChip status={update.status} />
