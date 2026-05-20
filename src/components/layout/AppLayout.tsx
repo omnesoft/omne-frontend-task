@@ -1,5 +1,6 @@
 import { Link, Outlet } from '@tanstack/react-router'
 import { Activity } from 'lucide-react'
+import { DEFAULT_FEED_SEARCH } from '../../lib/feed-search'
 import { navItems } from './nav-config'
 
 export function AppLayout() {
@@ -21,6 +22,7 @@ export function AppLayout() {
                 <li key={item.to}>
                   <Link
                     to={item.to}
+                    {...(item.to === '/' ? { search: DEFAULT_FEED_SEARCH } : {})}
                     activeOptions={{ exact: item.exact }}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-colors hover:bg-surface-raised"
                     activeProps={{

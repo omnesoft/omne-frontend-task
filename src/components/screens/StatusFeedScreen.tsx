@@ -1,62 +1,70 @@
 import { Link } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { fixtureStatusUpdates } from '../../fixtures/status-updates'
-import { fixtureTeams } from '../../fixtures/teams'
+import { FEED_PAGE_SIZE, useStatuses } from '../../api/hooks/use-statuses'
+import { useTeams } from '../../api/hooks/use-teams'
+import type { StatusListFilters } from '../../api/query-keys'
+import type { FeedSearch } from '../../lib/feed-search'
+import { Route } from '../../routes/_app/index'
 import { FeedPagination } from '../feed/FeedPagination'
 import { FeedToolbar } from '../feed/FeedToolbar'
 import { StatusUpdateCard } from '../feed/StatusUpdateCard'
+import { QueryState } from '../feedback/QueryState'
 import { Button } from '../ui/Button'
 
-const ITEMS_PER_PAGE = 6
+function FeedListSkeleton() {
+  return (
+    <div className="space-y-4" aria-hidden>
+      {Array.from({ length: 3 }, (_, i) => (
+        <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-raised" />
+      ))}
+    </div>
+  )
+}
 
 export function StatusFeedScreen() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [teamFilter, setTeamFilter] = useState('all')
-  const [currentPage, setCurrentPage] = useState(1)
+  const { page, status, team, search } = Route.useSearch()
+  const navigate = Route.useNavigate()
 
-  const filteredUpdates = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
-    return fixtureStatusUpdates.filter((update) => {
-      if (statusFilter !== 'all' && update.status !== statusFilter) {
-        return false
-      }
-      if (teamFilter !== 'all' && update.teamId !== teamFilter) {
-        return false
-      }
-      if (!query) {
-        return true
-      }
-      const haystack = [update.authorName, update.teamName, update.body, update.project ?? '']
-        .join(' ')
-        .toLowerCase()
-      return haystack.includes(query)
+  const filters: StatusListFilters = {
+    page,
+    limit: FEED_PAGE_SIZE,
+    status,
+    team,
+    search,
+  }
+
+  const statusesQuery = useStatuses(filters)
+  const teamsQuery = useTeams()
+
+  const setSearch = (next: Partial<FeedSearch>) => {
+    navigate({
+      search: (prev) => ({
+        page: next.page ?? prev.page,
+        status: next.status ?? prev.status,
+        team: next.team ?? prev.team,
+        search: next.search ?? prev.search,
+      }),
     })
-  }, [searchQuery, statusFilter, teamFilter])
-
-  const totalPages = Math.max(1, Math.ceil(filteredUpdates.length / ITEMS_PER_PAGE))
-  const safePage = Math.min(currentPage, totalPages)
-
-  const pageUpdates = filteredUpdates.slice(
-    (safePage - 1) * ITEMS_PER_PAGE,
-    safePage * ITEMS_PER_PAGE,
-  )
+  }
 
   const handleSearchChange = (value: string) => {
-    setSearchQuery(value)
-    setCurrentPage(1)
+    setSearch({ search: value, page: 1 })
   }
 
   const handleStatusFilterChange = (value: string) => {
-    setStatusFilter(value)
-    setCurrentPage(1)
+    setSearch({ status: value, page: 1 })
   }
 
   const handleTeamFilterChange = (value: string) => {
-    setTeamFilter(value)
-    setCurrentPage(1)
+    setSearch({ team: value, page: 1 })
   }
+
+  const handlePageChange = (nextPage: number) => {
+    setSearch({ page: nextPage })
+  }
+
+  const pagination = statusesQuery.data?.pagination
+  const updates = statusesQuery.data?.data ?? []
 
   return (
     <div className="flex h-full flex-col">
@@ -71,35 +79,57 @@ export function StatusFeedScreen() {
           </Link>
         </div>
 
-        <FeedToolbar
-          search={searchQuery}
-          statusFilter={statusFilter}
-          teamFilter={teamFilter}
-          teams={fixtureTeams}
-          onSearchChange={handleSearchChange}
-          onStatusFilterChange={handleStatusFilterChange}
-          onTeamFilterChange={handleTeamFilterChange}
-        />
+        <QueryState
+          isPending={teamsQuery.isPending}
+          isError={teamsQuery.isError}
+          error={teamsQuery.error}
+          refetch={() => void teamsQuery.refetch()}
+          loadingFallback={
+            <div className="h-10 animate-pulse rounded-lg bg-surface-raised" aria-hidden />
+          }
+        >
+          <FeedToolbar
+            search={search}
+            statusFilter={status}
+            teamFilter={team}
+            teams={teamsQuery.data ?? []}
+            onSearchChange={handleSearchChange}
+            onStatusFilterChange={handleStatusFilterChange}
+            onTeamFilterChange={handleTeamFilterChange}
+          />
+        </QueryState>
       </div>
 
       <div className="flex-1 overflow-auto px-8 py-6">
-        <div className="mx-auto max-w-4xl space-y-4">
-          {pageUpdates.map((update) => (
-            <StatusUpdateCard key={update.id} update={update} />
-          ))}
+        <div className="mx-auto max-w-4xl">
+          <QueryState
+            isPending={statusesQuery.isPending}
+            isError={statusesQuery.isError}
+            error={statusesQuery.error}
+            refetch={() => void statusesQuery.refetch()}
+            loadingFallback={<FeedListSkeleton />}
+          >
+            <div className="space-y-4">
+              {updates.map((update) => (
+                <StatusUpdateCard key={update.id} update={update} />
+              ))}
+            </div>
+          </QueryState>
         </div>
       </div>
 
-      <div className="border-t border-border bg-surface px-8 py-4">
-        <FeedPagination
-          className="mx-auto max-w-4xl"
-          page={safePage}
-          totalPages={totalPages}
-          totalItems={filteredUpdates.length}
-          pageSize={ITEMS_PER_PAGE}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {pagination ? (
+        <div className="border-t border-border bg-surface px-8 py-4">
+          <FeedPagination
+            className="mx-auto max-w-4xl"
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.total}
+            pageSize={pagination.limit}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }
