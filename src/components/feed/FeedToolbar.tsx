@@ -27,8 +27,8 @@ export function FeedToolbar({
   className,
 }: FeedToolbarProps) {
   return (
-    <div className={cn('flex items-center gap-4', className)}>
-      <div className="relative flex-1">
+    <div className={cn('flex flex-col gap-4 md:flex-row md:items-center', className)}>
+      <div className="relative w-full md:flex-1">
         <Search
           className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-icon-muted"
           aria-hidden
@@ -42,11 +42,11 @@ export function FeedToolbar({
         />
       </div>
 
-      <div className="relative">
+      <div className="relative w-full md:w-auto">
         <Select
           value={statusFilter}
           onChange={(e) => onStatusFilterChange(e.target.value)}
-          className="min-w-[10rem] bg-surface-raised pr-10"
+          className="w-full min-w-0 bg-surface-raised pr-10 md:min-w-[10rem]"
         >
           <option value="all">All Statuses</option>
           {STATUS_SLUGS.map((slug) => (
@@ -61,11 +61,11 @@ export function FeedToolbar({
         />
       </div>
 
-      <div className="relative">
+      <div className="relative w-full md:w-auto">
         <Select
           value={teamFilter}
           onChange={(e) => onTeamFilterChange(e.target.value)}
-          className="min-w-[10rem] bg-surface-raised pr-10"
+          className="w-full min-w-0 bg-surface-raised pr-10 md:min-w-[10rem]"
         >
           <option value="all">All Teams</option>
           {teams.map((team) => (

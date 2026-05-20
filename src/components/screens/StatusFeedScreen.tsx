@@ -68,8 +68,8 @@ export function StatusFeedScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-border bg-surface px-8 py-6">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="border-b border-border bg-surface px-4 py-6 md:px-8">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-2xl font-semibold text-foreground">Status Feed</h2>
           <Link to="/create">
             <Button type="button" className="px-4 py-2">
@@ -100,7 +100,7 @@ export function StatusFeedScreen() {
         </QueryState>
       </div>
 
-      <div className="flex-1 overflow-auto px-8 py-6">
+      <div className="flex-1 overflow-auto px-4 py-6 md:px-8">
         <div className="mx-auto max-w-4xl">
           <QueryState
             isPending={statusesQuery.isPending}
@@ -119,7 +119,7 @@ export function StatusFeedScreen() {
       </div>
 
       {pagination ? (
-        <div className="border-t border-border bg-surface px-8 py-4">
+        <div className="border-t border-border bg-surface px-4 py-4 md:px-8">
           <FeedPagination
             className="mx-auto max-w-4xl"
             page={pagination.page}

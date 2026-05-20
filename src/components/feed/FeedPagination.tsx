@@ -22,12 +22,17 @@ export function FeedPagination({
   const end = Math.min(page * pageSize, totalItems)
 
   return (
-    <div className={cn('flex items-center justify-between', className)}>
+    <div
+      className={cn(
+        'flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between',
+        className,
+      )}
+    >
       <p className="text-sm text-foreground-muted">
         Showing {start} to {end} of {totalItems} updates
       </p>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
         <button
           type="button"
           onClick={() => onPageChange(Math.max(1, page - 1))}
