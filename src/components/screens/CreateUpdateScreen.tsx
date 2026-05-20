@@ -8,6 +8,7 @@ import { fixtureProjects } from '../../fixtures/projects'
 import { ApiError } from '../../lib/api-client'
 import { cn } from '../../lib/cn'
 import { DEFAULT_FEED_SEARCH } from '../../lib/feed-search'
+import { validateStatusForm } from '../../lib/status-form-validation'
 import { STATUS_LABELS, STATUS_SLUGS, type StatusSlug } from '../../types/status'
 import { QueryState } from '../feedback/QueryState'
 import { Button } from '../ui/Button'
@@ -85,12 +86,9 @@ export function CreateUpdateScreen({ mode, statusId }: CreateUpdateScreenProps) 
     setFieldErrors({})
     setFormError(undefined)
 
-    if (!project) {
-      setFieldErrors((prev) => ({ ...prev, project: 'Please select a project' }))
-      return
-    }
-    if (!teamId) {
-      setFieldErrors((prev) => ({ ...prev, teamId: 'Please select a team' }))
+    const clientErrors = validateStatusForm({ project, teamId, body: updateBody })
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors)
       return
     }
 
@@ -98,7 +96,7 @@ export function CreateUpdateScreen({ mode, statusId }: CreateUpdateScreenProps) 
       teamId,
       project,
       status,
-      body: updateBody,
+      body: updateBody.trim(),
       blockers: blockers.trim() ? blockers.trim() : null,
       statusDate,
     }
@@ -226,6 +224,7 @@ export function CreateUpdateScreen({ mode, statusId }: CreateUpdateScreenProps) 
           id="updateBody"
           value={updateBody}
           disabled={pending}
+          error={Boolean(fieldErrors.body)}
           onChange={(e) => {
             setUpdateBody(e.target.value)
             setFieldErrors((prev) => ({ ...prev, body: undefined }))
@@ -296,7 +295,7 @@ export function CreateUpdateScreen({ mode, statusId }: CreateUpdateScreenProps) 
 
   return (
     <div className="h-full overflow-auto bg-app-canvas">
-      <div className="mx-auto max-w-2xl px-8 py-12">
+      <div className="mx-auto max-w-2xl px-4 py-12 md:px-8">
         <div className="mb-8">
           <h2 className="mb-2 text-2xl font-semibold text-foreground">
             {isEdit ? 'Edit Status Update' : 'Create Status Update'}
