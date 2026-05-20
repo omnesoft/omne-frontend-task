@@ -1,14 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { StatusFeedScreen } from '../../components/screens/StatusFeedScreen'
 
 export const Route = createFileRoute('/_app/')({
-  component: StatusFeedStub,
+  component: StatusFeedScreen,
 })
-
-function StatusFeedStub() {
-  return (
-    <div className="p-8">
-      <h2 className="text-2xl font-semibold text-foreground">Status Feed</h2>
-      <p className="mt-2 text-foreground-muted">Feed screen placeholder.</p>
-    </div>
-  )
-}

@@ -13,11 +13,11 @@
 | SPEC-002.3 | Form and action primitives | done | `src/components/ui/*` |
 | SPEC-002.4 | API-shaped fixtures and time helper | done | `src/fixtures/*`, `format-relative-time` |
 | SPEC-002.5 | Feed list building blocks | done | `StatusUpdateCard`, `FeedToolbar`, `FeedPagination` |
-| SPEC-003 | Screen ports (UI only) | planned | See [SPEC-003-screens.md](./SPEC-003-screens.md) |
-| SPEC-003.1 | Status feed screen | planned | Depends on SPEC-002.5 |
-| SPEC-003.2 | Create update screen | planned | |
-| SPEC-003.3 | Team overview screen | planned | |
-| SPEC-003.4 | My updates screen | planned | |
-| SPEC-003.5 | Settings screen | planned | Can pair with 3.4 in one session |
+| SPEC-003 | Screen ports (UI only) | done | See [SPEC-003-screens.md](./SPEC-003-screens.md) |
+| SPEC-003.1 | Status feed screen | done | `StatusFeedScreen`, fixtures + local filters |
+| SPEC-003.2 | Create update screen | done | `CreateUpdateScreen`, project required |
+| SPEC-003.3 | Team overview screen | done | `TeamOverviewScreen`, `MetricCard` |
+| SPEC-003.4 | My updates screen | done | Static `EmptyState` |
+| SPEC-003.5 | Settings screen | done | Presentational `SettingsRow` |
 
 Legend: `planned` | `in_progress` | `done` | `blocked`
