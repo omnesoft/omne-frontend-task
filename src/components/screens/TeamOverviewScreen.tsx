@@ -5,9 +5,11 @@ import { DEFAULT_FEED_SEARCH } from '../../lib/feed-search'
 import { formatRelativeTime } from '../../lib/format-relative-time'
 import type { TeamSummary } from '../../types/team'
 import { QueryState } from '../feedback/QueryState'
+import { EmptyState } from '../layout/EmptyState'
 import { PageHeader } from '../layout/PageHeader'
 import { StatusChip } from '../status/StatusChip'
 import { MetricCard } from '../team/MetricCard'
+import { Button } from '../ui/Button'
 
 const metrics = [
   {
@@ -42,7 +44,7 @@ const metrics = [
 
 function MetricsSkeleton() {
   return (
-    <div className="mb-8 grid grid-cols-4 gap-6" aria-hidden>
+    <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4" aria-hidden>
       {Array.from({ length: 4 }, (_, i) => (
         <div key={i} className="h-28 animate-pulse rounded-lg bg-surface-raised" />
       ))}
@@ -59,7 +61,7 @@ export function TeamOverviewScreen() {
 
   return (
     <div className="h-full overflow-auto">
-      <div className="px-8 py-6">
+      <div className="px-4 py-6 md:px-8">
         <PageHeader title="Team Overview" description="Track team progress at a glance" />
 
         <QueryState
@@ -81,10 +83,34 @@ export function TeamOverviewScreen() {
   )
 }
 
+function isTeamSummaryEmpty(summary: TeamSummary): boolean {
+  return (
+    summary.totalUpdatesThisWeek === 0 &&
+    summary.members.every((member) => member.lastUpdate == null)
+  )
+}
+
 function TeamOverviewContent({ summary }: { summary: TeamSummary }) {
+  if (isTeamSummaryEmpty(summary)) {
+    return (
+      <EmptyState
+        icon={<FileText className="size-16 text-icon-muted" aria-hidden />}
+        title="No updates yet"
+        description="Your team hasn't posted any status updates yet. Be the first to share your progress!"
+        action={
+          <Link to="/create">
+            <Button type="button" className="px-6 py-2">
+              Create First Update
+            </Button>
+          </Link>
+        }
+      />
+    )
+  }
+
   return (
     <>
-      <div className="mb-8 grid grid-cols-4 gap-6">
+      <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4">
         {metrics.map((metric) => (
           <MetricCard
             key={metric.label}
